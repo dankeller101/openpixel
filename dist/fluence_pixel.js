@@ -182,6 +182,8 @@ var Cookie = /*#__PURE__*/function () {
         var fluenceId = JSON.parse(this.get('grandmafluencescookierecipe'));
         return fluenceIdName in fluenceId ? fluenceId[fluenceIdName] : '';
       }
+
+      return '';
     }
   }, {
     key: "setUtms",
@@ -370,6 +372,10 @@ var Pixel = /*#__PURE__*/function () {
         // get the utm campaign
         fluence_id: function fluence_id() {
           return Cookie.getFluenceId();
+        },
+        // get fluence id 
+        is_fluence_click: function is_fluence_click() {
+          return Helper.isPresent(Url.getParameterByName('fluenceId'));
         }
       }, Config.params);
     }
@@ -385,6 +391,10 @@ var Pixel = /*#__PURE__*/function () {
   }, {
     key: "send",
     value: function send() {
+      if (Cookie.getFluenceId() === '') {
+        return;
+      }
+
       window.navigator.sendBeacon ? this.sendBeacon() : this.sendImage();
     }
   }, {

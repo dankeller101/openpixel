@@ -1,6 +1,6 @@
 class Cookie {
   static prefix() {
-    return  `__${pixelFuncName}_`;
+    return `__${pixelFuncName}_`;
   }
 
   static set(name, value, minutes, path = '/') {
@@ -16,20 +16,39 @@ class Cookie {
   static get(name) {
     var name = `${this.prefix()}${name}=`;
     var ca = document.cookie.split(';');
-    for (var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1);
+      if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
     return;
   }
 
   static delete(name) {
-    this.set(name,'',-100);
+    this.set(name, '', -100);
   }
 
   static exists(name) {
     return Helper.isPresent(this.get(name));
+  }
+
+  static setFluenceId() {
+    var fluenceIdName = 'fluenceId';
+    var val = Url.getParameterByName(fluenceIdName);
+    if (Helper.isPresent(val)) {
+      var save = {};
+      save[fluenceIdName] = val;
+      this.set('grandmafluencescookierecipe', JSON.stringify(save));
+    }
+  }
+
+  static getFluenceId() {
+    var fluenceIdName = 'fluenceId';
+    if (this.exists('grandmafluencescookierecipe')) {
+      var fluenceId = JSON.parse(this.get('grandmafluencescookierecipe'));
+      return fluenceIdName in fluenceId ? fluenceId[fluenceIdName] : '';
+    }
+    return '';
   }
 
   static setUtms() {
