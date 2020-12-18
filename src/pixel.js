@@ -42,7 +42,7 @@ class Pixel {
       utm_content: key => Cookie.getUtm(key), // get the utm content
       utm_campaign: key => Cookie.getUtm(key), // get the utm campaign
       fluence_id: () => Cookie.getFluenceId(), // get fluence id 
-      is_fluence_click: () => Helper.isPresent(Url.getParameterByName('fluenceId')),
+      is_fluence_click: () => Helper.isPresent(Url.getParameterByName('flidz')),
       ...Config.params
     }
   }

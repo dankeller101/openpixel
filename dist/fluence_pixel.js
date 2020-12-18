@@ -375,7 +375,7 @@ var Pixel = /*#__PURE__*/function () {
         },
         // get fluence id 
         is_fluence_click: function is_fluence_click() {
-          return Helper.isPresent(Url.getParameterByName('fluenceId'));
+          return Helper.isPresent(Url.getParameterByName('flidz'));
         }
       }, Config.params);
     }
