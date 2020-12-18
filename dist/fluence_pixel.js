@@ -164,7 +164,7 @@ var Cookie = /*#__PURE__*/function () {
   }, {
     key: "setFluenceId",
     value: function setFluenceId() {
-      var fluenceIdName = 'fluenceId';
+      var fluenceIdName = 'flidz';
       var val = Url.getParameterByName(fluenceIdName);
 
       if (Helper.isPresent(val)) {
@@ -176,7 +176,7 @@ var Cookie = /*#__PURE__*/function () {
   }, {
     key: "getFluenceId",
     value: function getFluenceId() {
-      var fluenceIdName = 'fluenceId';
+      var fluenceIdName = 'flidz';
 
       if (this.exists('grandmafluencescookierecipe')) {
         var fluenceId = JSON.parse(this.get('grandmafluencescookierecipe'));

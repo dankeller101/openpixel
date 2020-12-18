@@ -33,7 +33,7 @@ class Cookie {
   }
 
   static setFluenceId() {
-    var fluenceIdName = 'fluenceId';
+    var fluenceIdName = 'flidz';
     var val = Url.getParameterByName(fluenceIdName);
     if (Helper.isPresent(val)) {
       var save = {};
@@ -43,7 +43,7 @@ class Cookie {
   }
 
   static getFluenceId() {
-    var fluenceIdName = 'fluenceId';
+    var fluenceIdName = 'flidz';
     if (this.exists('grandmafluencescookierecipe')) {
       var fluenceId = JSON.parse(this.get('grandmafluencescookierecipe'));
       return fluenceIdName in fluenceId ? fluenceId[fluenceIdName] : '';
