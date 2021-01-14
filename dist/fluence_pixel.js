@@ -487,6 +487,39 @@ window.onload = function () {
         new Pixel(event, Helper.now(), this.getAttribute('data-fluence-data'));
       }
     }.bind(dataAttributes[i]));
+  } // handle shopify script tracking
+
+
+  if ((typeof Shopify === "undefined" ? "undefined" : _typeof(Shopify)) === 'object') {
+    var _Shopify$checkout, _Shopify$checkout2, _Shopify$checkout3;
+
+    var event = 'conversion-event';
+
+    if (Shopify.Checkout.step !== 'thank_you') {
+      return;
+    }
+
+    var email = (_Shopify$checkout = Shopify.checkout) === null || _Shopify$checkout === void 0 ? void 0 : _Shopify$checkout.email;
+    var phone = (_Shopify$checkout2 = Shopify.checkout) === null || _Shopify$checkout2 === void 0 ? void 0 : _Shopify$checkout2.phone;
+
+    if (email == null && phone == null) {
+      return;
+    }
+
+    var orderId = (_Shopify$checkout3 = Shopify.checkout) === null || _Shopify$checkout3 === void 0 ? void 0 : _Shopify$checkout3.order_id;
+
+    if (orderId == null) {
+      return;
+    }
+
+    console.log('running shopify pixel');
+    console.log(orderId);
+    new Pixel(event, Helper.now(), {
+      orderId: orderId,
+      email: email,
+      phone: phone,
+      type: 'shopify'
+    });
   }
 };
-}(window, document, window["fluence"], "fluence", "http://localhost:3000/pixel.gif", 1));
+}(window, document, window["fluence"], "fluence", "https://e9dd6fb0bdc2.ngrok.io/pixel.gif", 1));

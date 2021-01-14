@@ -57,4 +57,29 @@ window.onload = function () {
       }
     }.bind(dataAttributes[i]));
   }
+
+  // handle shopify script tracking
+  if (typeof Shopify === 'object') {
+    var event = 'conversion-event';
+    if (Shopify.Checkout.step !== 'thank_you') {
+      return;
+    }
+    const email = Shopify.checkout?.email;
+    const phone = Shopify.checkout?.phone;
+    if (email == null && phone == null) {
+      return;
+    }
+    const orderId = Shopify.checkout?.order_id;
+    if (orderId == null) {
+      return;
+    }
+    console.log('running shopify pixel');
+    console.log(orderId);
+    new Pixel(event, Helper.now(), {
+      orderId,
+      email,
+      phone,
+      type: 'shopify',
+    });
+  }
 }
