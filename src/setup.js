@@ -25,6 +25,35 @@ pixelFunc.process = function (method, value, optional) {
 for (var i = 0, l = pixelFunc.queue.length; i < l; i++) {
   pixelFunc.process.apply(pixelFunc, pixelFunc.queue[i]);
 }
+var didRunShopify = false;
+var runShopify = function (flag) {
+  if (didRunShopify === true) {
+    return;
+  }
+    if (typeof Shopify === 'object') {
+      var event = 'conversion-event';
+      if (Shopify?.Checkout?.step !== 'thank_you') {
+        return;
+      }
+      
+      const email = Shopify.checkout?.email;
+      const phone = Shopify.checkout?.phone;
+      if (email == null && phone == null) {
+        return;
+      }
+      const orderId = Shopify.checkout?.order_id;
+      if (orderId == null) {
+        return;
+      }
+      new Pixel(event, Helper.now(), {
+        orderId,
+        email,
+        phone,
+        type: 'shopify',
+      });
+    }
+    didRunShopify = true;
+};
 
 window.addEventListener('unload', function () {
   if (!Config.pageCloseOnce) {
@@ -37,6 +66,9 @@ window.addEventListener('unload', function () {
     });
   }
 });
+
+
+runShopify();
 
 window.onload = function () {
   var aTags = document.getElementsByTagName('a');
@@ -58,28 +90,5 @@ window.onload = function () {
     }.bind(dataAttributes[i]));
   }
 
-  // handle shopify script tracking
-  if (typeof Shopify === 'object') {
-    var event = 'conversion-event';
-    if (Shopify.Checkout.step !== 'thank_you') {
-      return;
-    }
-    const email = Shopify.checkout?.email;
-    const phone = Shopify.checkout?.phone;
-    if (email == null && phone == null) {
-      return;
-    }
-    const orderId = Shopify.checkout?.order_id;
-    if (orderId == null) {
-      return;
-    }
-    console.log('running shopify pixel');
-    console.log(orderId);
-    new Pixel(event, Helper.now(), {
-      orderId,
-      email,
-      phone,
-      type: 'shopify',
-    });
-  }
+  runShopify();
 }

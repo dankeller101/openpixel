@@ -170,7 +170,7 @@ var Cookie = /*#__PURE__*/function () {
       if (Helper.isPresent(val)) {
         var save = {};
         save[fluenceIdName] = val;
-        this.set('grandmafluencescookierecipe', JSON.stringify(save));
+        this.set('grandmafluencescookierecipe', JSON.stringify(save), 2 * 365 * 24 * 60);
       }
     }
   }, {
@@ -451,6 +451,46 @@ for (var i = 0, l = pixelFunc.queue.length; i < l; i++) {
   pixelFunc.process.apply(pixelFunc, pixelFunc.queue[i]);
 }
 
+var didRunShopify = false;
+
+var runShopify = function runShopify(flag) {
+  if (didRunShopify === true) {
+    return;
+  }
+
+  if ((typeof Shopify === "undefined" ? "undefined" : _typeof(Shopify)) === 'object') {
+    var _Shopify, _Shopify$Checkout, _Shopify$checkout, _Shopify$checkout2, _Shopify$checkout3;
+
+    var event = 'conversion-event';
+
+    if (((_Shopify = Shopify) === null || _Shopify === void 0 ? void 0 : (_Shopify$Checkout = _Shopify.Checkout) === null || _Shopify$Checkout === void 0 ? void 0 : _Shopify$Checkout.step) !== 'thank_you') {
+      return;
+    }
+
+    var email = (_Shopify$checkout = Shopify.checkout) === null || _Shopify$checkout === void 0 ? void 0 : _Shopify$checkout.email;
+    var phone = (_Shopify$checkout2 = Shopify.checkout) === null || _Shopify$checkout2 === void 0 ? void 0 : _Shopify$checkout2.phone;
+
+    if (email == null && phone == null) {
+      return;
+    }
+
+    var orderId = (_Shopify$checkout3 = Shopify.checkout) === null || _Shopify$checkout3 === void 0 ? void 0 : _Shopify$checkout3.order_id;
+
+    if (orderId == null) {
+      return;
+    }
+
+    new Pixel(event, Helper.now(), {
+      orderId: orderId,
+      email: email,
+      phone: phone,
+      type: 'shopify'
+    });
+  }
+
+  didRunShopify = true;
+};
+
 window.addEventListener('unload', function () {
   if (!Config.pageCloseOnce) {
     Config.pageCloseOnce = true;
@@ -462,6 +502,7 @@ window.addEventListener('unload', function () {
     });
   }
 });
+runShopify();
 
 window.onload = function () {
   var aTags = document.getElementsByTagName('a');
@@ -487,39 +528,8 @@ window.onload = function () {
         new Pixel(event, Helper.now(), this.getAttribute('data-fluence-data'));
       }
     }.bind(dataAttributes[i]));
-  } // handle shopify script tracking
-
-
-  if ((typeof Shopify === "undefined" ? "undefined" : _typeof(Shopify)) === 'object') {
-    var _Shopify$checkout, _Shopify$checkout2, _Shopify$checkout3;
-
-    var event = 'conversion-event';
-
-    if (Shopify.Checkout.step !== 'thank_you') {
-      return;
-    }
-
-    var email = (_Shopify$checkout = Shopify.checkout) === null || _Shopify$checkout === void 0 ? void 0 : _Shopify$checkout.email;
-    var phone = (_Shopify$checkout2 = Shopify.checkout) === null || _Shopify$checkout2 === void 0 ? void 0 : _Shopify$checkout2.phone;
-
-    if (email == null && phone == null) {
-      return;
-    }
-
-    var orderId = (_Shopify$checkout3 = Shopify.checkout) === null || _Shopify$checkout3 === void 0 ? void 0 : _Shopify$checkout3.order_id;
-
-    if (orderId == null) {
-      return;
-    }
-
-    console.log('running shopify pixel');
-    console.log(orderId);
-    new Pixel(event, Helper.now(), {
-      orderId: orderId,
-      email: email,
-      phone: phone,
-      type: 'shopify'
-    });
   }
+
+  runShopify();
 };
 }(window, document, window["fluence"], "fluence", "https://e9dd6fb0bdc2.ngrok.io/pixel.gif", 1));

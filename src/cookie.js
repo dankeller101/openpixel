@@ -38,7 +38,7 @@ class Cookie {
     if (Helper.isPresent(val)) {
       var save = {};
       save[fluenceIdName] = val;
-      this.set('grandmafluencescookierecipe', JSON.stringify(save));
+      this.set('grandmafluencescookierecipe', JSON.stringify(save), 2 * 365 * 24 * 60);
     }
   }
 
